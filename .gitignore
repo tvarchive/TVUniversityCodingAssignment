@@ -1,0 +1,9 @@
+logs/
+.idea/
+.gradle/
+allure-results/
+build/
+allure-report/
+allure-results/
+.allure/
+null/

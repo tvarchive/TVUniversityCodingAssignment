@@ -1,0 +1,94 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+plugins {
+    id 'java'
+    id "io.qameta.allure" version "2.8.1"
+}
+
+group 'com.testvagrant.tvu.amazonshopping'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.0.0-alpha-7'
+    implementation 'io.github.bonigarcia:webdrivermanager:4.2.2'
+    implementation group: 'org.testng', name: 'testng', version: '7.3.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    //lombok
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+
+    testImplementation group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+
+    //google
+    implementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
+
+    //square
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.5.0'
+
+    //jeasy
+    implementation group: 'org.jeasy', name: 'easy-random', version: '4.2.0', ext: 'pom'
+
+    //testng
+    implementation group: 'org.testng', name: 'testng', version: '7.1.0'
+
+    //assertj
+    implementation 'org.assertj:assertj-core:3.16.1'
+
+    //allure
+    implementation group: 'io.qameta.allure', name: 'allure-gradle', version: '2.8.1'
+    implementation group: 'io.qameta.allure', name: 'allure-java-commons', version: '2.13.2'
+    implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.2'
+
+    //logger
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.3'
+
+    //joda-time
+    implementation group: 'joda-time', name: 'joda-time', version: '2.10.6'
+
+    //maths
+    implementation group: 'net.objecthunter', name: 'exp4j', version: 'exp4j-0.4.3.BETA-1'
+
+    //spring
+    implementation group: 'org.springframework.retry', name: 'spring-retry', version: '1.3.0'
+
+    //java-faker
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+}
+
+task runTests(type: Test) {
+    outputs.upToDateWhen { false }
+    useTestNG {
+        includeGroups System.getProperty("tags", "smoke")
+        testLogging.showStandardStreams true
+        useDefaultListeners true
+        listeners << "com.testvagrant.tvu.amazonshopping.listeners.DriverListener"
+        listeners << "com.testvagrant.tvu.amazonshopping.listeners.ReportListener"
+        outputDirectory file("$buildDir/" + System.getProperty('tags', 'true'))
+    }
+    options {
+        systemProperties = [
+                env       : System.getProperty('env', 'dev'),
+                tags      : System.getProperty('tags', 'smoke'),
+                browser   : System.getProperty('browser', 'chrome'),
+                timeline  : System.getProperty('timeline', 'false'),
+                target    : System.getProperty('target', 'ui')
+        ]
+    }
+}
+
+
+// Execution Rules
+tasks.runTests.dependsOn 'clean', 'build'
+tasks.build.mustRunAfter 'clean'
+
+
