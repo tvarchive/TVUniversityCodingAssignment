@@ -71,6 +71,7 @@ task runTests(type: Test) {
         includeGroups System.getProperty("tags", "smoke")
         testLogging.showStandardStreams true
         useDefaultListeners true
+        listeners << "com.testvagrant.tvu.amazonshopping.listeners.SiteListener"
         listeners << "com.testvagrant.tvu.amazonshopping.listeners.DriverListener"
         listeners << "com.testvagrant.tvu.amazonshopping.listeners.ReportListener"
         outputDirectory file("$buildDir/" + System.getProperty('tags', 'true'))
