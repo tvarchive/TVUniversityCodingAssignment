@@ -1,8 +1,6 @@
-# Amazon Automation
+# TVUniversity Coding Assignment
 
 A coding assignment for web automation
-
-![](docs/run.gif)
 
 ## Setup
 
